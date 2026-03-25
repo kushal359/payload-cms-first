@@ -3,7 +3,7 @@ import React from 'react'
 import { PatternFormat } from 'react-number-format'
 import { useField, FieldLabel } from '@payloadcms/ui'
 
-{/*export const PhoneInput = ({ path, field }: any) => {
+export const PhoneInput = ({ path, field }: any) => {
   const { value, setValue } = useField<string>({ path })
 
   return (
@@ -12,11 +12,11 @@ import { useField, FieldLabel } from '@payloadcms/ui'
       <PatternFormat
         format="(###) ###-####"
         mask=" "
+        placeholder="(123) 456-7890"
         className="after-label"
         style={{
           width: '100%',
           padding: '10px',
-          border: '1px solid #e3e3e3',
           borderRadius: '4px',
           background: 'var(--theme-input-bg)',
           color: 'var(--theme-input-color)'
@@ -28,8 +28,9 @@ import { useField, FieldLabel } from '@payloadcms/ui'
       />
     </div>
   )
-}*/}
+}
 {/* HardCoded */}
+{/*
 export function formatPhoneNumber(input: string | number): string {
     const digits = input.toString().replace(/\D/g, ''); // 1. Keep only numbers
 
@@ -45,3 +46,11 @@ export function formatPhoneNumber(input: string | number): string {
 
     return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`; // 5. Full format
 }
+    
+//usage: use in collection
+hooks: {
+          afterChange: [(value: unknown): string => formatPhoneNumber(value as string)],
+      }
+
+
+*/}

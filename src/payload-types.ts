@@ -70,6 +70,7 @@ export interface Config {
     users: User;
     media: Media;
     posts: Post;
+    'block-collection': BlockCollection;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -80,6 +81,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
+    'block-collection': BlockCollectionSelect<false> | BlockCollectionSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -130,6 +132,9 @@ export interface UserAuthOperations {
 export interface User {
   id: string;
   role: 'admin' | 'editor' | 'user';
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -175,24 +180,48 @@ export interface Media {
 export interface Post {
   id: string;
   title: string;
-  content: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  'Phone Number'?: string | null;
+  selectUsers?: (string | null) | User;
+  Content?: string | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "block-collection".
+ */
+export interface BlockCollection {
+  id: string;
+  'Personal Forms'?: (PersonalDetails | FamilyDetails)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Personal Details".
+ */
+export interface PersonalDetails {
+  'First Name': string;
+  'Middle Name'?: string | null;
+  'Last Name': string;
+  Age: number;
+  'Blood Group': string;
+  'Phone Number': string;
+  Gender?: ('male' | 'female') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'Personal-details';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Family Details".
+ */
+export interface FamilyDetails {
+  'Mothers Name': string;
+  'Fathers Name': string;
+  'Grand Fathers Name': string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'Family-details';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -229,6 +258,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'posts';
         value: string | Post;
+      } | null)
+    | ({
+        relationTo: 'block-collection';
+        value: string | BlockCollection;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -278,6 +311,9 @@ export interface PayloadMigration {
  */
 export interface UsersSelect<T extends boolean = true> {
   role?: T;
+  firstName?: T;
+  lastName?: T;
+  phoneNumber?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -319,10 +355,50 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface PostsSelect<T extends boolean = true> {
   title?: T;
-  content?: T;
-  'Phone Number'?: T;
+  selectUsers?: T;
+  Content?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "block-collection_select".
+ */
+export interface BlockCollectionSelect<T extends boolean = true> {
+  'Personal Forms'?:
+    | T
+    | {
+        'Personal-details'?: T | PersonalDetailsSelect<T>;
+        'Family-details'?: T | FamilyDetailsSelect<T>;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Personal Details_select".
+ */
+export interface PersonalDetailsSelect {
+  'First Name'?: boolean;
+  'Middle Name'?: boolean;
+  'Last Name'?: boolean;
+  Age?: boolean;
+  'Blood Group'?: boolean;
+  'Phone Number'?: boolean;
+  Gender?: boolean;
+  id?: boolean;
+  blockName?: boolean;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Family Details_select".
+ */
+export interface FamilyDetailsSelect {
+  'Mothers Name'?: boolean;
+  'Fathers Name'?: boolean;
+  'Grand Fathers Name'?: boolean;
+  id?: boolean;
+  blockName?: boolean;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -1,0 +1,21 @@
+/* Default (light mode) */
+.login {
+    background-color: #fff;  /* light background */
+    color: #000;             /* dark text */
+}
+
+.thumbnail-card__label {
+    color: #000;             /* dark label in light mode */
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+    .login {
+        background-color: #000;  /* dark background */
+        color: #fff;             /* light text */
+    }
+
+    .thumbnail-card__label {
+        color: #fff;             /* light label in dark mode */
+    }
+}

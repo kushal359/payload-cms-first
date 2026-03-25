@@ -5,6 +5,11 @@ import '@payloadcms/next/css'
 import type { ServerFunctionClient } from 'payload'
 import { handleServerFunctions, RootLayout } from '@payloadcms/next/layouts'
 import React from 'react'
+import '@mantine/core/styles.css'
+import '@mantine/tiptap/styles.css'
+import '@mantine/notifications/styles.css';
+
+import { MantineProvider } from "@mantine/core";
 
 import { importMap } from './admin/importMap.js'
 import './custom.scss'
@@ -24,7 +29,9 @@ const serverFunction: ServerFunctionClient = async function (args) {
 
 const Layout = ({ children }: Args) => (
   <RootLayout config={config} importMap={importMap} serverFunction={serverFunction}>
-    {children}
+    <MantineProvider>
+      {children}
+    </MantineProvider>
   </RootLayout>
 )
 

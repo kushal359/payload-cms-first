@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { formatPhoneNumber } from '@/components/PhoneInput'
+//import { formatPhoneNumber } from '@/components/PhoneInput'
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
@@ -13,19 +13,30 @@ export const Posts: CollectionConfig = {
       required: true,
     },
     {
-      name: 'content',
-      type: 'richText',
-      required: true,
+      name: 'selectUsers',
+      label: 'Select Users',
+      type: 'relationship',
+      relationTo: 'users',
+      admin: {
+        components:{
+          Field: 'src/components/UsersSelect#UsersSelect'
+        }
+      },
+      filterOptions: {
+        role: {
+          equals: 'user',
+        },
+      },
     },
     {
-      name: 'Phone Number',
-      type: 'text',
+      name: 'Content',
+      type: 'textarea',
       admin: {
-          placeholder: '(123) 456-7890',
-      },
-      hooks: {
-          afterChange: [(value: unknown): string => formatPhoneNumber(value as string)],
+        components: {
+          Field: 'src/components/RichTextContent#RichTextContent'
+        }
       }
     },
+    
   ],
 }
