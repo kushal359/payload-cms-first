@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { formatPhoneNumber } from '@/components/PhoneInput'
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
@@ -20,10 +21,11 @@ export const Posts: CollectionConfig = {
       name: 'Phone Number',
       type: 'text',
       admin: {
-        components: {
-          Field: 'src/components/PhoneInput#PhoneInput', 
-        },
-      }, 
+          placeholder: '(123) 456-7890',
+      },
+      hooks: {
+          afterChange: [(value: unknown): string => formatPhoneNumber(value as string)],
+      }
     },
   ],
 }

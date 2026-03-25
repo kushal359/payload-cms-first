@@ -3,7 +3,7 @@ import React from 'react'
 import { PatternFormat } from 'react-number-format'
 import { useField, FieldLabel } from '@payloadcms/ui'
 
-export const PhoneInput = ({ path, field }: any) => {
+{/*export const PhoneInput = ({ path, field }: any) => {
   const { value, setValue } = useField<string>({ path })
 
   return (
@@ -28,4 +28,20 @@ export const PhoneInput = ({ path, field }: any) => {
       />
     </div>
   )
+}*/}
+{/* HardCoded */}
+export function formatPhoneNumber(input: string | number): string {
+    const digits = input.toString().replace(/\D/g, ''); // 1. Keep only numbers
+
+    if (digits.length === 0) return ''; // 2. Empty input
+
+    if (digits.length <= 3) {
+        return `(${digits}`; // 3. Start area code
+    }
+
+    if (digits.length <= 6) {
+        return `(${digits.slice(0, 3)}) ${digits.slice(3)}`; // 4. Add middle part
+    }
+
+    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`; // 5. Full format
 }
