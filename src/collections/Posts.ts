@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload'
 //import { formatPhoneNumber } from '@/components/PhoneInput'
+import { BlockComp } from '@/components/BlockComp'
+import { BlockCompFamily } from '@/components/BlockCompFamily'
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
@@ -17,6 +19,7 @@ export const Posts: CollectionConfig = {
       label: 'Select Users',
       type: 'relationship',
       relationTo: 'users',
+      required: true,
       admin: {
         components:{
           Field: 'src/components/UsersSelect#UsersSelect'
@@ -29,6 +32,15 @@ export const Posts: CollectionConfig = {
       },
     },
     {
+      name: 'email',
+      type: 'email',
+    },
+    {
+      name: 'phoneNumber',
+      type: 'text',
+    },
+
+    {
       name: 'Content',
       type: 'textarea',
       admin: {
@@ -37,6 +49,11 @@ export const Posts: CollectionConfig = {
         }
       }
     },
+    {
+      name: 'Blocks',
+      type: 'blocks',
+      blocks: [BlockComp,BlockCompFamily],
+    }
     
   ],
 }

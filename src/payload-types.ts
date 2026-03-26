@@ -180,18 +180,11 @@ export interface Media {
 export interface Post {
   id: string;
   title: string;
-  selectUsers?: (string | null) | User;
+  selectUsers: string | User;
+  email?: string | null;
+  phoneNumber?: string | null;
   Content?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "block-collection".
- */
-export interface BlockCollection {
-  id: string;
-  'Personal Forms'?: (PersonalDetails | FamilyDetails)[] | null;
+  Blocks?: (PersonalDetails | FamilyDetails)[] | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -222,6 +215,16 @@ export interface FamilyDetails {
   id?: string | null;
   blockName?: string | null;
   blockType: 'Family-details';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "block-collection".
+ */
+export interface BlockCollection {
+  id: string;
+  'Personal Forms'?: (PersonalDetails | FamilyDetails)[] | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -356,16 +359,10 @@ export interface MediaSelect<T extends boolean = true> {
 export interface PostsSelect<T extends boolean = true> {
   title?: T;
   selectUsers?: T;
+  email?: T;
+  phoneNumber?: T;
   Content?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "block-collection_select".
- */
-export interface BlockCollectionSelect<T extends boolean = true> {
-  'Personal Forms'?:
+  Blocks?:
     | T
     | {
         'Personal-details'?: T | PersonalDetailsSelect<T>;
@@ -399,6 +396,20 @@ export interface FamilyDetailsSelect {
   'Grand Fathers Name'?: boolean;
   id?: boolean;
   blockName?: boolean;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "block-collection_select".
+ */
+export interface BlockCollectionSelect<T extends boolean = true> {
+  'Personal Forms'?:
+    | T
+    | {
+        'Personal-details'?: T | PersonalDetailsSelect<T>;
+        'Family-details'?: T | FamilyDetailsSelect<T>;
+      };
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

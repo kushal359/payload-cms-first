@@ -1,59 +1,129 @@
-import { headers as getHeaders } from 'next/headers.js'
-import Image from 'next/image'
-import { getPayload } from 'payload'
-import React from 'react'
-import { fileURLToPath } from 'url'
+'use client';
 
-import config from '@/payload.config'
-import './styles.css'
+import React, { useEffect, useState } from 'react';
+import './styles.css';
+import { Container, Card, Text, Grid } from '@mantine/core';
+import DOMPurify from 'dompurify';
+import { blocks } from 'payload/shared';
 
-export default async function HomePage() {
-  const headers = await getHeaders()
-  const payloadConfig = await config
-  const payload = await getPayload({ config: payloadConfig })
-  const { user } = await payload.auth({ headers })
 
-  const fileURL = `vscode://file/${fileURLToPath(import.meta.url)}`
+interface Post {
+  createdAt?:any;
+  updatedAt?: any;
+  id?: string;
+  _id?: string;
+  title: string;
+  Content: string;
+}
+
+export default function HomePage() {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [block, setBlock] = useState<any>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch posts on client
+  useEffect(() => {
+    async function fetchPosts() {
+      try {
+        const res = await fetch('http://localhost:3000/api/posts');
+        const data = await res.json();
+        setPosts(data.docs || []);
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+        setPosts([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchPosts();
+  }, []);
+
+    useEffect(() => {
+    async function fetchBlocks() {
+      try {
+        const res = await fetch('http://localhost:3000/api/block-collection');
+        const data = await res.json();
+        setBlock(data.docs);
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+        setPosts([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchBlocks();
+  }, []);
 
   return (
-    <div className="home">
-      <div className="content">
-        <picture>
-          <source srcSet="https://raw.githubusercontent.com/payloadcms/payload/main/packages/ui/src/assets/payload-favicon.svg" />
-          <Image
-            alt="Payload Logo"
-            height={65}
-            src="https://raw.githubusercontent.com/payloadcms/payload/main/packages/ui/src/assets/payload-favicon.svg"
-            width={65}
-          />
-        </picture>
-        {!user && <h1>Welcome to your new project.</h1>}
-        {user && <h1>Welcome back, {user.email}</h1>}
-        <div className="links">
-          <a
-            className="admin"
-            href={payloadConfig.routes.admin}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Go to admin panel
-          </a>
-          <a
-            className="docs"
-            href="https://payloadcms.com/docs"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Documentation
-          </a>
-        </div>
-      </div>
-      <div className="footer">
-        <p>Update this page by editing</p>
-        <a className="codeLink" href={fileURL}>
-          <code>app/(frontend)/page.tsx</code>
-        </a>
-      </div>
-    </div>
-  )
+     <Container size="sm" py="md" style={{border: '1px solid white'}} >
+
+      <h2>Recent Posts</h2>
+      {/* Posts */}
+      {loading ? (
+        <Text >Loading posts...</Text>
+      ) : posts.length > 0 ? (
+        <Container>
+        <Grid gutter="md">
+          {posts.map((post: Post) => (
+            <Grid.Col key={post.id || post._id} style={{border: '1px solid white',margin: '50px'}} >
+              <Card shadow="sm" padding="md" style={{ height: '100%' }}>
+                <Text size="xs">Created At: {post.createdAt}</Text>
+                <Text>Updated At: {post.updatedAt}</Text>
+                <Text fw={700} mb="sm">{post.title}</Text>
+                <div
+                  style={{ fontSize: '0.875rem' }}
+                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.Content) }}
+                />
+              </Card>
+            </Grid.Col>
+          ))}
+        
+
+        </Grid>
+        </Container>
+      ) : (
+        <Text >No posts found.</Text>
+      )}
+      <h2>Blocks</h2>
+        {loading ? (
+        <Text >Loading Blocks...</Text>
+      ) : block.length > 0 ? (
+        <Container style={{margin:'50px'}}>
+        <Grid gutter="md">
+          {block.map((blo: any) => (
+            <Grid key={blo.id} style={{border: '1px solid white',margin: '50px'}} >
+              {
+                blo['Personal Forms'].map((bl:any) => {
+                  return(
+                    <Grid.Col key={bl.id} style={{margin: '50px'}}  >
+                      <Card>
+                      <Text fw={1000} style={{border: '1px solid white',margin: '50px'}} >{bl.blockType}</Text>
+                        {
+                          Object.keys(bl).map(key => {
+                              if (key === 'id' || key === 'blockType') return null;
+                            return(
+                                <Container key={key}>
+                                <Text>{bl[key]}</Text>
+                                </Container>                              
+                            );
+                          })
+                        }
+                      </Card>
+                    </Grid.Col>
+
+                  );
+                  })
+              }
+            </Grid>
+          ))}
+        </Grid>
+        </Container>
+      ) : (
+        <Text >No posts found.</Text>
+      )}
+      
+    </Container>
+  );
 }

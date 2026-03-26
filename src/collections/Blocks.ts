@@ -4,9 +4,6 @@ import { BlockCompFamily } from "@/components/BlockCompFamily";
 
 export const BlockCollection:  CollectionConfig = {
     slug: 'block-collection',
-    access: {
-        read: () => true,
-    },
     fields: [
         {
             name:'Personal Forms',
@@ -18,5 +15,23 @@ export const BlockCollection:  CollectionConfig = {
                 BlockCompFamily
             ]
         }
-    ]
+    ],
+
+    /**
+     * Onlly accessible and visible to admin only 
+     */
+    access: {
+        read: ({req: {user}}) => {
+            return user?.role === 'admin'
+        },
+        create: ({req: {user}}) => {
+            return user?.role === 'admin'
+        },
+        update: ({req: {user}}) => {
+            return user?.role === 'admin'
+        },
+        delete: ({req: {user}}) => {
+            return user?.role === 'admin'
+        }
+    }
 }

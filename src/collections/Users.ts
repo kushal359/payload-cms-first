@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload";
 
+
 interface CustomContext {
   customError?: {
     type: string;
@@ -31,7 +32,7 @@ export const Users: CollectionConfig = {
         { label: "Admin", value: "admin" },
         { label: "Editor", value: "editor" },
         { label: "User", value: "user" },
-      ],
+      ],  
       required: true,
       defaultValue: "user",
     },
@@ -57,8 +58,35 @@ export const Users: CollectionConfig = {
         },
       },
     },
+    {
+      name: 'currentuser',
+      type:'ui',
+      admin: {
+        components: {
+          Field: 'src/components/CurrentLoggedUser#MyComponent',
+        }
+      }
+    }
   ],
+  /**
+   * Prevents access to admin panel dashboard if users are allowed to login
+   */
+  access: {
+    admin: ({ req: { user } }) => {
+      return user?.role === "admin" || user?.role === "editor";
+    },
+  },
   hooks: {
+    /**
+     * Preventing Users with role except admin to login
+     */
+    //beforeLogin: [
+     // async ({ user }) => {
+       // if(user.role === 'user' ) {
+      //    throw new Error("You are not Allowed to login");
+      //  }
+     // }
+   // ],
     /**
      * Prevent non admin user from upgrading their role.
      */
